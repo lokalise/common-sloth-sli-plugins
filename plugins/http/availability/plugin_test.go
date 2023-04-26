@@ -37,7 +37,7 @@ func TestSLIPlugin(t *testing.T) {
 			expQuery: `
 (
 	sum(
-		rate(http_request_duration_seconds_count{ service=~"test", route=~".*", status=~"(5..|429|431)" }[{{ .window }}])
+		rate(http_request_duration_seconds_count{ service=~"test", route=~".*", status_code=~"(5..|429|431)" }[{{ .window }}])
 	)
 	/
 	(sum(
@@ -55,7 +55,7 @@ func TestSLIPlugin(t *testing.T) {
 			expQuery: `
 (
 	sum(
-		rate(http_request_duration_seconds_count{ k1="v2",k2="v2",service=~"test", route=~".*", status=~"(5..|429|431)" }[{{ .window }}])
+		rate(http_request_duration_seconds_count{ k1="v2",k2="v2",service=~"test", route=~".*", status_code=~"(5..|429|431)" }[{{ .window }}])
 	)
 	/
 	(sum(
@@ -73,7 +73,7 @@ func TestSLIPlugin(t *testing.T) {
 			expQuery: `
 (
 	sum(
-		rate(http_request_duration_seconds_count{ k1="v2",k2="v2",service=~"test", route=~".*", status=~"(5..|429|431)" }[{{ .window }}])
+		rate(http_request_duration_seconds_count{ k1="v2",k2="v2",service=~"test", route=~".*", status_code=~"(5..|429|431)" }[{{ .window }}])
 	)
 	/
 	(sum(
@@ -91,7 +91,7 @@ func TestSLIPlugin(t *testing.T) {
 			expQuery: `
 (
 	sum(
-		rate(http_request_duration_seconds_count{ k1="v2",k2="v2",service=~"test", route=~".*", status=~"(5..|429|431)" }[{{ .window }}])
+		rate(http_request_duration_seconds_count{ k1="v2",k2="v2",service=~"test", route=~".*", status_code=~"(5..|429|431)" }[{{ .window }}])
 	)
 	/
 	(sum(
@@ -110,7 +110,7 @@ func TestSLIPlugin(t *testing.T) {
 			expQuery: `
 (
 	sum(
-		rate(http_request_duration_seconds_count{ k1="v2",k2="v2",service=~"test", route=~"/test.+", status=~"(5..|403|499)" }[{{ .window }}])
+		rate(http_request_duration_seconds_count{ k1="v2",k2="v2",service=~"test", route=~"/test.+", status_code=~"(5..|403|499)" }[{{ .window }}])
 	)
 	/
 	(sum(

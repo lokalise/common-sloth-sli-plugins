@@ -17,7 +17,7 @@ const (
 var queryTpl = template.Must(template.New("").Option("missingkey=error").Parse(`
 (
 	sum(
-		rate({{ .metric_name }}_count{ {{ .filter }}service=~"{{ .serviceName }}", route=~"{{ .route }}", status=~"{{ .status }}" }[{{"{{ .window }}"}}])
+		rate({{ .metric_name }}_count{ {{ .filter }}service=~"{{ .serviceName }}", route=~"{{ .route }}", status_code=~"{{ .status }}" }[{{"{{ .window }}"}}])
 	)
 	/
 	(sum(
