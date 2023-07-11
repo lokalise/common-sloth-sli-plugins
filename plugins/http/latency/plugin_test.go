@@ -38,7 +38,7 @@ func TestSLIPlugin(t *testing.T) {
 				"bucket":             "0.5",
 			},
 			expQuery: `
-(
+1 - (
 	sum(
 		rate(http_request_duration_seconds_bucket{ service=~"test", route=~".*", le="0.5" }[{{ .window }}])
 	)
@@ -57,7 +57,7 @@ func TestSLIPlugin(t *testing.T) {
 				"service_name_regex": "test",
 			},
 			expQuery: `
-(
+1 - (
 	sum(
 		rate(http_request_duration_seconds_bucket{ k1="v2",k2="v2",service=~"test", route=~".*", le="0.5" }[{{ .window }}])
 	)
@@ -76,7 +76,7 @@ func TestSLIPlugin(t *testing.T) {
 				"service_name_regex": "test",
 			},
 			expQuery: `
-(
+1 - (
 	sum(
 		rate(http_request_duration_seconds_bucket{ k1="v2",k2="v2",service=~"test", route=~".*", le="0.5" }[{{ .window }}])
 	)
@@ -95,7 +95,7 @@ func TestSLIPlugin(t *testing.T) {
 				"service_name_regex": "test",
 			},
 			expQuery: `
-(
+1 - (
 	sum(
 		rate(http_request_duration_seconds_bucket{ k1="v2",k2="v2",service=~"test", route=~".*", le="0.5" }[{{ .window }}])
 	)
@@ -114,7 +114,7 @@ func TestSLIPlugin(t *testing.T) {
 				"route_regex":        "/test.+",
 			},
 			expQuery: `
-(
+1 - (
 	sum(
 		rate(http_request_duration_seconds_bucket{ k1="v2",k2="v2",service=~"test", route=~"/test.+", le="0.5" }[{{ .window }}])
 	)

@@ -16,7 +16,7 @@ const (
 )
 
 var queryTpl = template.Must(template.New("").Option("missingkey=error").Parse(`
-(
+1 - (
 	sum(
 		rate({{ .metric_name }}_bucket{ {{ .filter }}service=~"{{ .serviceName }}", route=~"{{ .route }}", le="{{ .bucket }}" }[{{"{{ .window }}"}}])
 	)
