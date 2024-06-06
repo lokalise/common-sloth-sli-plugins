@@ -10,14 +10,21 @@ spec:
   labels:
     owner: "platform"
   slos:
-    - name: "http-availability"
-      objective: 99.9
-      description: "99.9% of the requests should be successful"
+    # Metric sample:
+    #   http_request_duration_seconds_count{container="app", endpoint="metrics", instance="10.49.61.69:9080", job="autopilot-backend-workspace-service", method="GET", namespace="autopilot", pod="autopilot-backend-workspace-rollout-d976d4977-fxwsc", route="/v1/workspaces/:workspaceId", service="autopilot-backend-workspace-service", status_code="200"}
+    - name: http-error-rate
+      objective: 99.99
+      description: "99.99% of the requests should be successful"
       sli:
         plugin:
-          id: "lokalise/nginx-http/availability"
+          id: lokalise/http-error-rate
           options:
-            service_name_regex: "^example$"
+            metricName: http_request_duration_seconds_count
+            serviceLabelName: service
+            serviceLabelValue: autopilot-backend-workspace-service
+            errorLabelName: status_code
+            errorLabelValue: (5..|429)
+            additionalLabels: route=~"/v1/workspaces/.*"
       alerting:
         name: HighErrorRate
         pageAlert:
@@ -25,15 +32,21 @@ spec:
             runbookurl: todo
         ticketAlert:
           disable: true
-    - name: "http-latency"
-      objective: 95
-      description: "95% of the requests should be below 500ms"
+
+    # Metric sample:
+    #   http_request_duration_seconds_bucket{container="app", endpoint="metrics", instance="10.49.63.203:9080", job="autopilot-backend-import-service", le="5", method="POST", namespace="autopilot", pod="autopilot-backend-import-rollout-68d6f9bd9-xsfg7", route="/v1/projects/:projectId/actions/upload-content-item-collection", service="autopilot-backend-import-service", status_code="202"}
+    - name: http-latency
+      objective: 99.99
+      description: "99.99% of the requests should be below 500ms"
       sli:
         plugin:
-          id: "lokalise/nginx-http/latency"
+          id: lokalise/http-latency
           options:
-            service_name_regex: "^example$"
-            bucket: "0.5"
+            metricName: http_request_duration_seconds_bucket
+            serviceLabelName: service
+            serviceLabelValue: autopilot-backend-import-service
+            upperLimitBucket: "5"
+            additionalLabels: route=~"/v1/projects/.*"
       alerting:
         name: HighLatency
         pageAlert:
