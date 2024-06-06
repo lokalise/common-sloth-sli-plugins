@@ -67,7 +67,7 @@ func TestSLIPlugin(t *testing.T) {
 		(sum(
 			rate(http_request_duration_seconds_count{ route=~".*", service=~"test"}[{{ .window }}])
 		) > 0)
-	) AND on(service) sum(rate(http_request_duration_seconds_count{ route=~".*", service=~"test"}[{{ .window }}])) > 10
+	) AND on(service) sum(rate(http_request_duration_seconds_count{ service=~"test"}[{{ .window }}])) > 10
 ) OR on() vector(0)
 `,
 		},
