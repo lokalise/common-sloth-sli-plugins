@@ -11,7 +11,7 @@ import (
 
 const (
 	SLIPluginVersion = "prometheus/v1"
-	SLIPluginID      = "lokalise/http-error-rate"
+	SLIPluginID      = "lokalise/http-latency"
 )
 
 var queryTpl = template.Must(template.New("").Option("missingkey=error").Parse(`
@@ -34,7 +34,7 @@ func SLIPlugin(ctx context.Context, meta, labels, options map[string]string) (st
 	upperLimitBucket, err := getUpperLimitBucket(options)
 
 	if err != nil {
-		return "", fmt.Errorf("could not get service name: %w", err)
+		return "", fmt.Errorf("Error parsing options: %w", err)
 	}
 
 	var b bytes.Buffer

@@ -35,7 +35,7 @@ func SLIPlugin(ctx context.Context, meta, labels, options map[string]string) (st
 	errorLabelValue, err := getErrorLabelValue(options)
 
 	if err != nil {
-		return "", fmt.Errorf("could not get service name: %w", err)
+		return "", fmt.Errorf("Error parsing options: %w", err)
 	}
 
 	var b bytes.Buffer
