@@ -25,6 +25,7 @@ spec:
             errorLabelName: status_code
             errorLabelValue: (5..|429)
             additionalLabels: route=~"/v1/workspaces/.*"
+            minimumAmountOfTraffic: "10"
       alerting:
         name: HighErrorRate
         pageAlert:
@@ -47,6 +48,7 @@ spec:
             serviceLabelValue: autopilot-backend-import-service
             upperLimitBucket: "5"
             additionalLabels: route=~"/v1/projects/.*"
+            minimumAmountOfTraffic: "10"
       alerting:
         name: HighLatency
         pageAlert:
