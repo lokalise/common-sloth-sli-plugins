@@ -49,12 +49,12 @@ func TestSLIPlugin(t *testing.T) {
 
 		"When all options are provided, it should return a valid query.": {
 			options: map[string]string{
-				"metricName":             "nginx_ingress_controller_request_duration_seconds_bucket",
-				"serviceLabelName":       "service",
-				"serviceLabelValue":      "test",
-				"upperLimitBucket":       "0.5",
-				"additionalLabels":       "route=~\".*\"",
-				"minimumAmountOfTraffic": "10",
+				"metricName":               "nginx_ingress_controller_request_duration_seconds_bucket",
+				"serviceLabelName":         "service",
+				"serviceLabelValue":        "test",
+				"upperLimitBucket":         "0.5",
+				"additionalLabels":         "route=~\".*\"",
+				"minimumRequestsPerSecond": "10",
 			},
 			expQuery: `
 	1 - ((

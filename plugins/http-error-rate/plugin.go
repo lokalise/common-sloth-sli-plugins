@@ -24,7 +24,7 @@ var queryTpl = template.Must(template.New("").Option("missingkey=error").Parse(`
 		(sum(
 			rate({{ .metricName }}{ {{ .additionalLabels }}{{ .serviceLabelName }}=~"{{ .serviceLabelValue }}"}[{{"{{ .window }}"}}])
 		) > 0)
-	) AND on({{ .serviceLabelName }}) sum(rate({{ .metricName }}{ {{ .serviceLabelName }}=~"{{ .serviceLabelValue }}"}[{{"{{ .window }}"}}])) > {{ .minimumAmountOfTraffic }}
+	) AND on({{ .serviceLabelName }}) sum(rate({{ .metricName }}{ {{ .serviceLabelName }}=~"{{ .serviceLabelValue }}"}[{{"{{ .window }}"}}])) > {{ .minimumRequestsPerSecond }}
 ) OR on() vector(0)
 `))
 
@@ -35,7 +35,7 @@ func SLIPlugin(ctx context.Context, meta, labels, options map[string]string) (st
 	serviceLabelValue, err := getServiceLabelValue(options)
 	errorLabelName, err := getErrorLabelName(options)
 	errorLabelValue, err := getErrorLabelValue(options)
-	minimumAmountOfTraffic, err := getMinimumAmountOfTraffic(options)
+	minimumRequestsPerSecond, err := getMinimumRequestsPerSecond(options)
 
 	if err != nil {
 		return "", fmt.Errorf("Error parsing options: %w", err)
@@ -43,13 +43,13 @@ func SLIPlugin(ctx context.Context, meta, labels, options map[string]string) (st
 
 	var b bytes.Buffer
 	data := map[string]string{
-		"metricName":             metricName,
-		"serviceLabelName":       serviceLabelName,
-		"serviceLabelValue":      serviceLabelValue,
-		"errorLabelName":         errorLabelName,
-		"errorLabelValue":        errorLabelValue,
-		"additionalLabels":       getAdditionalLabels(options),
-		"minimumAmountOfTraffic": minimumAmountOfTraffic,
+		"metricName":               metricName,
+		"serviceLabelName":         serviceLabelName,
+		"serviceLabelValue":        serviceLabelValue,
+		"errorLabelName":           errorLabelName,
+		"errorLabelValue":          errorLabelValue,
+		"additionalLabels":         getAdditionalLabels(options),
+		"minimumRequestsPerSecond": minimumRequestsPerSecond,
 	}
 	err = queryTpl.Execute(&b, data)
 	if err != nil {
@@ -133,11 +133,11 @@ func getMetricName(options map[string]string) (string, error) {
 	return metricName, nil
 }
 
-func getMinimumAmountOfTraffic(options map[string]string) (string, error) {
-	minimumAmountOfTraffic := options["minimumAmountOfTraffic"]
-	if minimumAmountOfTraffic == "" {
-		return "", fmt.Errorf("'minimumAmountOfTraffic' is required")
+func getMinimumRequestsPerSecond(options map[string]string) (string, error) {
+	minimumRequestsPerSecond := options["minimumRequestsPerSecond"]
+	if minimumRequestsPerSecond == "" {
+		return "", fmt.Errorf("'minimumRequestsPerSecond' is required")
 	}
 
-	return minimumAmountOfTraffic, nil
+	return minimumRequestsPerSecond, nil
 }

@@ -49,13 +49,13 @@ func TestSLIPlugin(t *testing.T) {
 
 		"When all options are provided, it should return a valid query.": {
 			options: map[string]string{
-				"metricName":             "http_request_duration_seconds_count",
-				"serviceLabelName":       "service",
-				"serviceLabelValue":      "test",
-				"errorLabelName":         "status_code",
-				"errorLabelValue":        "(5..|429|431)",
-				"additionalLabels":       "route=~\".*\"",
-				"minimumAmountOfTraffic": "10",
+				"metricName":               "http_request_duration_seconds_count",
+				"serviceLabelName":         "service",
+				"serviceLabelValue":        "test",
+				"errorLabelName":           "status_code",
+				"errorLabelValue":          "(5..|429|431)",
+				"additionalLabels":         "route=~\".*\"",
+				"minimumRequestsPerSecond": "10",
 			},
 			expQuery: `
 (
