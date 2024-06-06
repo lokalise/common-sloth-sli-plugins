@@ -21,8 +21,8 @@ spec:
         route=~\"/v1/workspaces/.*\", service=~\"autopilot-backend-workspace-service\",
         status_code=~\"(5..|429)\"}[5m])\n\t\t)\n\t\t/\n\t\t(sum(\n\t\t\trate(http_request_duration_seconds_count{
         route=~\"/v1/workspaces/.*\", service=~\"autopilot-backend-workspace-service\"}[5m])\n\t\t)
-        > 0)\n\t) AND on(service) sum(rate(http_request_duration_seconds_count{ route=~\"/v1/workspaces/.*\",
-        service=~\"autopilot-backend-workspace-service\"}[5m])) > 10\n) OR on() vector(0)\n)"
+        > 0)\n\t) AND on(service) sum(rate(http_request_duration_seconds_count{ service=~\"autopilot-backend-workspace-service\"}[5m]))
+        > 10\n) OR on() vector(0)\n)"
       labels:
         owner: platform
         sloth_id: example-http-error-rate
@@ -34,8 +34,8 @@ spec:
         route=~\"/v1/workspaces/.*\", service=~\"autopilot-backend-workspace-service\",
         status_code=~\"(5..|429)\"}[30m])\n\t\t)\n\t\t/\n\t\t(sum(\n\t\t\trate(http_request_duration_seconds_count{
         route=~\"/v1/workspaces/.*\", service=~\"autopilot-backend-workspace-service\"}[30m])\n\t\t)
-        > 0)\n\t) AND on(service) sum(rate(http_request_duration_seconds_count{ route=~\"/v1/workspaces/.*\",
-        service=~\"autopilot-backend-workspace-service\"}[30m])) > 10\n) OR on() vector(0)\n)"
+        > 0)\n\t) AND on(service) sum(rate(http_request_duration_seconds_count{ service=~\"autopilot-backend-workspace-service\"}[30m]))
+        > 10\n) OR on() vector(0)\n)"
       labels:
         owner: platform
         sloth_id: example-http-error-rate
@@ -47,8 +47,8 @@ spec:
         route=~\"/v1/workspaces/.*\", service=~\"autopilot-backend-workspace-service\",
         status_code=~\"(5..|429)\"}[1h])\n\t\t)\n\t\t/\n\t\t(sum(\n\t\t\trate(http_request_duration_seconds_count{
         route=~\"/v1/workspaces/.*\", service=~\"autopilot-backend-workspace-service\"}[1h])\n\t\t)
-        > 0)\n\t) AND on(service) sum(rate(http_request_duration_seconds_count{ route=~\"/v1/workspaces/.*\",
-        service=~\"autopilot-backend-workspace-service\"}[1h])) > 10\n) OR on() vector(0)\n)"
+        > 0)\n\t) AND on(service) sum(rate(http_request_duration_seconds_count{ service=~\"autopilot-backend-workspace-service\"}[1h]))
+        > 10\n) OR on() vector(0)\n)"
       labels:
         owner: platform
         sloth_id: example-http-error-rate
@@ -60,8 +60,8 @@ spec:
         route=~\"/v1/workspaces/.*\", service=~\"autopilot-backend-workspace-service\",
         status_code=~\"(5..|429)\"}[2h])\n\t\t)\n\t\t/\n\t\t(sum(\n\t\t\trate(http_request_duration_seconds_count{
         route=~\"/v1/workspaces/.*\", service=~\"autopilot-backend-workspace-service\"}[2h])\n\t\t)
-        > 0)\n\t) AND on(service) sum(rate(http_request_duration_seconds_count{ route=~\"/v1/workspaces/.*\",
-        service=~\"autopilot-backend-workspace-service\"}[2h])) > 10\n) OR on() vector(0)\n)"
+        > 0)\n\t) AND on(service) sum(rate(http_request_duration_seconds_count{ service=~\"autopilot-backend-workspace-service\"}[2h]))
+        > 10\n) OR on() vector(0)\n)"
       labels:
         owner: platform
         sloth_id: example-http-error-rate
@@ -73,8 +73,8 @@ spec:
         route=~\"/v1/workspaces/.*\", service=~\"autopilot-backend-workspace-service\",
         status_code=~\"(5..|429)\"}[6h])\n\t\t)\n\t\t/\n\t\t(sum(\n\t\t\trate(http_request_duration_seconds_count{
         route=~\"/v1/workspaces/.*\", service=~\"autopilot-backend-workspace-service\"}[6h])\n\t\t)
-        > 0)\n\t) AND on(service) sum(rate(http_request_duration_seconds_count{ route=~\"/v1/workspaces/.*\",
-        service=~\"autopilot-backend-workspace-service\"}[6h])) > 10\n) OR on() vector(0)\n)"
+        > 0)\n\t) AND on(service) sum(rate(http_request_duration_seconds_count{ service=~\"autopilot-backend-workspace-service\"}[6h]))
+        > 10\n) OR on() vector(0)\n)"
       labels:
         owner: platform
         sloth_id: example-http-error-rate
@@ -86,8 +86,8 @@ spec:
         route=~\"/v1/workspaces/.*\", service=~\"autopilot-backend-workspace-service\",
         status_code=~\"(5..|429)\"}[1d])\n\t\t)\n\t\t/\n\t\t(sum(\n\t\t\trate(http_request_duration_seconds_count{
         route=~\"/v1/workspaces/.*\", service=~\"autopilot-backend-workspace-service\"}[1d])\n\t\t)
-        > 0)\n\t) AND on(service) sum(rate(http_request_duration_seconds_count{ route=~\"/v1/workspaces/.*\",
-        service=~\"autopilot-backend-workspace-service\"}[1d])) > 10\n) OR on() vector(0)\n)"
+        > 0)\n\t) AND on(service) sum(rate(http_request_duration_seconds_count{ service=~\"autopilot-backend-workspace-service\"}[1d]))
+        > 10\n) OR on() vector(0)\n)"
       labels:
         owner: platform
         sloth_id: example-http-error-rate
@@ -99,8 +99,8 @@ spec:
         route=~\"/v1/workspaces/.*\", service=~\"autopilot-backend-workspace-service\",
         status_code=~\"(5..|429)\"}[3d])\n\t\t)\n\t\t/\n\t\t(sum(\n\t\t\trate(http_request_duration_seconds_count{
         route=~\"/v1/workspaces/.*\", service=~\"autopilot-backend-workspace-service\"}[3d])\n\t\t)
-        > 0)\n\t) AND on(service) sum(rate(http_request_duration_seconds_count{ route=~\"/v1/workspaces/.*\",
-        service=~\"autopilot-backend-workspace-service\"}[3d])) > 10\n) OR on() vector(0)\n)"
+        > 0)\n\t) AND on(service) sum(rate(http_request_duration_seconds_count{ service=~\"autopilot-backend-workspace-service\"}[3d]))
+        > 10\n) OR on() vector(0)\n)"
       labels:
         owner: platform
         sloth_id: example-http-error-rate
@@ -211,8 +211,7 @@ spec:
         le=\"5\" }[5m])\n\t\t\t)\n\t\t\t/\n\t\t\t(sum(\n\t\t\t\trate(http_request_duration_seconds_bucket{
         route=~\"/v1/projects/.*\", service=~\"autopilot-backend-import-service\"
         }[5m])\n\t\t\t) > 0)\n\t\t) AND on(service) sum(rate(http_request_duration_seconds_bucket{
-        route=~\"/v1/projects/.*\", service=~\"autopilot-backend-import-service\"
-        }[5m])) > 10\n) OR on() vector(1))\n)"
+        service=~\"autopilot-backend-import-service\" }[5m])) > 10\n) OR on() vector(1))\n)"
       labels:
         owner: platform
         sloth_id: example-http-latency
@@ -225,8 +224,7 @@ spec:
         le=\"5\" }[30m])\n\t\t\t)\n\t\t\t/\n\t\t\t(sum(\n\t\t\t\trate(http_request_duration_seconds_bucket{
         route=~\"/v1/projects/.*\", service=~\"autopilot-backend-import-service\"
         }[30m])\n\t\t\t) > 0)\n\t\t) AND on(service) sum(rate(http_request_duration_seconds_bucket{
-        route=~\"/v1/projects/.*\", service=~\"autopilot-backend-import-service\"
-        }[30m])) > 10\n) OR on() vector(1))\n)"
+        service=~\"autopilot-backend-import-service\" }[30m])) > 10\n) OR on() vector(1))\n)"
       labels:
         owner: platform
         sloth_id: example-http-latency
@@ -239,8 +237,7 @@ spec:
         le=\"5\" }[1h])\n\t\t\t)\n\t\t\t/\n\t\t\t(sum(\n\t\t\t\trate(http_request_duration_seconds_bucket{
         route=~\"/v1/projects/.*\", service=~\"autopilot-backend-import-service\"
         }[1h])\n\t\t\t) > 0)\n\t\t) AND on(service) sum(rate(http_request_duration_seconds_bucket{
-        route=~\"/v1/projects/.*\", service=~\"autopilot-backend-import-service\"
-        }[1h])) > 10\n) OR on() vector(1))\n)"
+        service=~\"autopilot-backend-import-service\" }[1h])) > 10\n) OR on() vector(1))\n)"
       labels:
         owner: platform
         sloth_id: example-http-latency
@@ -253,8 +250,7 @@ spec:
         le=\"5\" }[2h])\n\t\t\t)\n\t\t\t/\n\t\t\t(sum(\n\t\t\t\trate(http_request_duration_seconds_bucket{
         route=~\"/v1/projects/.*\", service=~\"autopilot-backend-import-service\"
         }[2h])\n\t\t\t) > 0)\n\t\t) AND on(service) sum(rate(http_request_duration_seconds_bucket{
-        route=~\"/v1/projects/.*\", service=~\"autopilot-backend-import-service\"
-        }[2h])) > 10\n) OR on() vector(1))\n)"
+        service=~\"autopilot-backend-import-service\" }[2h])) > 10\n) OR on() vector(1))\n)"
       labels:
         owner: platform
         sloth_id: example-http-latency
@@ -267,8 +263,7 @@ spec:
         le=\"5\" }[6h])\n\t\t\t)\n\t\t\t/\n\t\t\t(sum(\n\t\t\t\trate(http_request_duration_seconds_bucket{
         route=~\"/v1/projects/.*\", service=~\"autopilot-backend-import-service\"
         }[6h])\n\t\t\t) > 0)\n\t\t) AND on(service) sum(rate(http_request_duration_seconds_bucket{
-        route=~\"/v1/projects/.*\", service=~\"autopilot-backend-import-service\"
-        }[6h])) > 10\n) OR on() vector(1))\n)"
+        service=~\"autopilot-backend-import-service\" }[6h])) > 10\n) OR on() vector(1))\n)"
       labels:
         owner: platform
         sloth_id: example-http-latency
@@ -281,8 +276,7 @@ spec:
         le=\"5\" }[1d])\n\t\t\t)\n\t\t\t/\n\t\t\t(sum(\n\t\t\t\trate(http_request_duration_seconds_bucket{
         route=~\"/v1/projects/.*\", service=~\"autopilot-backend-import-service\"
         }[1d])\n\t\t\t) > 0)\n\t\t) AND on(service) sum(rate(http_request_duration_seconds_bucket{
-        route=~\"/v1/projects/.*\", service=~\"autopilot-backend-import-service\"
-        }[1d])) > 10\n) OR on() vector(1))\n)"
+        service=~\"autopilot-backend-import-service\" }[1d])) > 10\n) OR on() vector(1))\n)"
       labels:
         owner: platform
         sloth_id: example-http-latency
@@ -295,8 +289,7 @@ spec:
         le=\"5\" }[3d])\n\t\t\t)\n\t\t\t/\n\t\t\t(sum(\n\t\t\t\trate(http_request_duration_seconds_bucket{
         route=~\"/v1/projects/.*\", service=~\"autopilot-backend-import-service\"
         }[3d])\n\t\t\t) > 0)\n\t\t) AND on(service) sum(rate(http_request_duration_seconds_bucket{
-        route=~\"/v1/projects/.*\", service=~\"autopilot-backend-import-service\"
-        }[3d])) > 10\n) OR on() vector(1))\n)"
+        service=~\"autopilot-backend-import-service\" }[3d])) > 10\n) OR on() vector(1))\n)"
       labels:
         owner: platform
         sloth_id: example-http-latency
