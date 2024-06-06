@@ -49,21 +49,24 @@ func TestSLIPlugin(t *testing.T) {
 
 		"When all options are provided, it should return a valid query.": {
 			options: map[string]string{
-				"metricName":        "nginx_ingress_controller_request_duration_seconds_bucket",
-				"serviceLabelName":  "service",
-				"serviceLabelValue": "test",
-				"upperLimitBucket":  "0.5",
-				"additionalLabels":  "route=~\".*\"",
+				"metricName":             "nginx_ingress_controller_request_duration_seconds_bucket",
+				"serviceLabelName":       "service",
+				"serviceLabelValue":      "test",
+				"upperLimitBucket":       "0.5",
+				"additionalLabels":       "route=~\".*\"",
+				"minimumAmountOfTraffic": "10",
 			},
 			expQuery: `
 	1 - ((
-	sum(
-		rate(nginx_ingress_controller_request_duration_seconds_bucket{ route=~".*", service=~"test", le="0.5" }[{{ .window }}])
-	)
-	/
-	(sum(
-		rate(nginx_ingress_controller_request_duration_seconds_bucket{ route=~".*", service=~"test" }[{{ .window }}])
-	) > 0)
+		(
+			sum(
+				rate(nginx_ingress_controller_request_duration_seconds_bucket{ route=~".*", service=~"test", le="0.5" }[{{ .window }}])
+			)
+			/
+			(sum(
+				rate(nginx_ingress_controller_request_duration_seconds_bucket{ route=~".*", service=~"test" }[{{ .window }}])
+			) > 0)
+		) AND on(service) sum(rate(nginx_ingress_controller_request_duration_seconds_bucket{ route=~".*", service=~"test" }[{{ .window }}])) > 10
 ) OR on() vector(1))
 `,
 		},

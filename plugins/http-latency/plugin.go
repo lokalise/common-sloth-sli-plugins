@@ -16,13 +16,15 @@ const (
 
 var queryTpl = template.Must(template.New("").Option("missingkey=error").Parse(`
 	1 - ((
-	sum(
-		rate({{ .metricName }}{ {{ .additionalLabels }}{{ .serviceLabelName }}=~"{{ .serviceLabelValue }}", le="{{ .upperLimitBucket }}" }[{{"{{ .window }}"}}])
-	)
-	/
-	(sum(
-		rate({{ .metricName }}{ {{ .additionalLabels }}{{ .serviceLabelName }}=~"{{ .serviceLabelValue }}" }[{{"{{ .window }}"}}])
-	) > 0)
+		(
+			sum(
+				rate({{ .metricName }}{ {{ .additionalLabels }}{{ .serviceLabelName }}=~"{{ .serviceLabelValue }}", le="{{ .upperLimitBucket }}" }[{{"{{ .window }}"}}])
+			)
+			/
+			(sum(
+				rate({{ .metricName }}{ {{ .additionalLabels }}{{ .serviceLabelName }}=~"{{ .serviceLabelValue }}" }[{{"{{ .window }}"}}])
+			) > 0)
+		) AND on({{ .serviceLabelName }}) sum(rate({{ .metricName }}{ {{ .additionalLabels }}{{ .serviceLabelName }}=~"{{ .serviceLabelValue }}" }[{{"{{ .window }}"}}])) > {{ .minimumAmountOfTraffic }}
 ) OR on() vector(1))
 `))
 
@@ -32,6 +34,7 @@ func SLIPlugin(ctx context.Context, meta, labels, options map[string]string) (st
 	serviceLabelName, err := getServiceLabelName(options)
 	serviceLabelValue, err := getServiceLabelValue(options)
 	upperLimitBucket, err := getUpperLimitBucket(options)
+	minimumAmountOfTraffic, err := getMinimumAmountOfTraffic(options)
 
 	if err != nil {
 		return "", fmt.Errorf("Error parsing options: %w", err)
@@ -39,11 +42,12 @@ func SLIPlugin(ctx context.Context, meta, labels, options map[string]string) (st
 
 	var b bytes.Buffer
 	data := map[string]string{
-		"metricName":        metricName,
-		"serviceLabelName":  serviceLabelName,
-		"serviceLabelValue": serviceLabelValue,
-		"upperLimitBucket":  upperLimitBucket,
-		"additionalLabels":  getAdditionalLabels(options),
+		"metricName":             metricName,
+		"serviceLabelName":       serviceLabelName,
+		"serviceLabelValue":      serviceLabelValue,
+		"upperLimitBucket":       upperLimitBucket,
+		"additionalLabels":       getAdditionalLabels(options),
+		"minimumAmountOfTraffic": minimumAmountOfTraffic,
 	}
 	err = queryTpl.Execute(&b, data)
 	if err != nil {
@@ -109,4 +113,13 @@ func getMetricName(options map[string]string) (string, error) {
 	}
 
 	return metricName, nil
+}
+
+func getMinimumAmountOfTraffic(options map[string]string) (string, error) {
+	minimumAmountOfTraffic := options["minimumAmountOfTraffic"]
+	if minimumAmountOfTraffic == "" {
+		return "", fmt.Errorf("'minimumAmountOfTraffic' is required")
+	}
+
+	return minimumAmountOfTraffic, nil
 }
