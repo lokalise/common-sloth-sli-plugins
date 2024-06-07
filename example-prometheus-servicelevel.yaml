@@ -185,6 +185,8 @@ spec:
     rules:
     - alert: HighErrorRate
       annotations:
+        name: High error rate in '{{ $labels.sloth_service }}'
+        runbookurl: todo
         summary: '{{$labels.sloth_service}} {{$labels.sloth_slo}} SLO error budget
           burn rate is over expected.'
         title: (page) {{$labels.sloth_service}} {{$labels.sloth_slo}} SLO error budget
@@ -202,7 +204,6 @@ spec:
             max(slo:sli_error:ratio_rate6h{sloth_id="example-http-error-rate", sloth_service="example", sloth_slo="http-error-rate"} > (6 * 0.00010000000000005117)) without (sloth_window)
         )
       labels:
-        runbookurl: todo
         sloth_severity: page
   - name: sloth-slo-sli-recordings-example-http-latency
     rules:
@@ -374,6 +375,8 @@ spec:
     rules:
     - alert: HighLatency
       annotations:
+        name: High latency in '{{ $labels.sloth_service }}'
+        runbookurl: todo
         summary: '{{$labels.sloth_service}} {{$labels.sloth_slo}} SLO error budget
           burn rate is over expected.'
         title: (page) {{$labels.sloth_service}} {{$labels.sloth_slo}} SLO error budget
@@ -391,5 +394,4 @@ spec:
             max(slo:sli_error:ratio_rate6h{sloth_id="example-http-latency", sloth_service="example", sloth_slo="http-latency"} > (6 * 0.00010000000000005117)) without (sloth_window)
         )
       labels:
-        runbookurl: todo
         sloth_severity: page

@@ -29,7 +29,8 @@ spec:
       alerting:
         name: HighErrorRate
         pageAlert:
-          labels:
+          annotations:
+            name: "High error rate in '{{ $labels.sloth_service }}'"
             runbookurl: todo
         ticketAlert:
           disable: true
@@ -52,7 +53,8 @@ spec:
       alerting:
         name: HighLatency
         pageAlert:
-          labels:
+          annotations:
+            name: "High latency in '{{ $labels.sloth_service }}'"
             runbookurl: todo
         ticketAlert:
           disable: true
