@@ -24,7 +24,7 @@ var queryTpl = template.Must(template.New("").Option("missingkey=error").Parse(`
 			(sum(
 				rate({{ .metricName }}{ {{ .additionalLabels }}{{ .serviceLabelName }}=~"{{ .serviceLabelValue }}" }[{{"{{ .window }}"}}])
 			) > 0)
-		) AND on({{ .serviceLabelName }}) sum(rate({{ .metricName }}{ {{ .serviceLabelName }}=~"{{ .serviceLabelValue }}" }[{{"{{ .window }}"}}])) > {{ .minimumRequestsPerSecond }}
+		) AND on({{ .serviceLabelName }}) sum(rate({{ .metricNameCount }}{ {{ .serviceLabelName }}=~"{{ .serviceLabelValue }}" }[{{"{{ .window }}"}}])) > {{ .minimumRequestsPerSecond }}
 ) OR on() vector(1))
 `))
 
@@ -43,6 +43,7 @@ func SLIPlugin(ctx context.Context, meta, labels, options map[string]string) (st
 	var b bytes.Buffer
 	data := map[string]string{
 		"metricName":               metricName,
+		"metricNameCount":          strings.Replace(metricName, "_bucket", "_count", 1),
 		"serviceLabelName":         serviceLabelName,
 		"serviceLabelValue":        serviceLabelValue,
 		"upperLimitBucket":         upperLimitBucket,

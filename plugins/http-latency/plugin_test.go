@@ -66,7 +66,7 @@ func TestSLIPlugin(t *testing.T) {
 			(sum(
 				rate(nginx_ingress_controller_request_duration_seconds_bucket{ route=~".*", service=~"test" }[{{ .window }}])
 			) > 0)
-		) AND on(service) sum(rate(nginx_ingress_controller_request_duration_seconds_bucket{ service=~"test" }[{{ .window }}])) > 10
+		) AND on(service) sum(rate(nginx_ingress_controller_request_duration_seconds_count{ service=~"test" }[{{ .window }}])) > 10
 ) OR on() vector(1))
 `,
 		},
