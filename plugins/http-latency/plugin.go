@@ -22,7 +22,7 @@ var queryTpl = template.Must(template.New("").Option("missingkey=error").Parse(`
 			)
 			/
 			(sum(
-				rate({{ .metricName }}{ {{ .additionalLabels }}{{ .serviceLabelName }}=~"{{ .serviceLabelValue }}" }[{{"{{ .window }}"}}])
+				rate({{ .metricNameCount }}{ {{ .additionalLabels }}{{ .serviceLabelName }}=~"{{ .serviceLabelValue }}" }[{{"{{ .window }}"}}])
 			) > 0)
 		) AND on({{ .serviceLabelName }}) sum(rate({{ .metricNameCount }}{ {{ .serviceLabelName }}=~"{{ .serviceLabelValue }}" }[{{"{{ .window }}"}}])) > {{ .minimumRequestsPerSecond }}
 ) OR on() vector(1))
