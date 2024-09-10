@@ -1,0 +1,8 @@
+{
+ "release-type": "simple",
+  "bootstrap-sha": "1ddd281ccf088c2a119c8acf5fa7862317aa5aed",
+  "commit-search-depth": 100,
+  "packages": {
+    ".": {}
+  }
+}
