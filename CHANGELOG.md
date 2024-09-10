@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/lokalise/common-sloth-sli-plugins/compare/v1.0.0...v1.1.0) (2024-09-10)
+
+
+### Features
+
+* **PLAT-3399:** Add uptime plugin ([49f54cf](https://github.com/lokalise/common-sloth-sli-plugins/commit/49f54cfa00e274043eccd71b86614625d4e25daa))
+
 ## 1.0.0 (2024-09-10)
 
 
