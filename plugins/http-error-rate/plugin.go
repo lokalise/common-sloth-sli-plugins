@@ -24,7 +24,7 @@ var queryTpl = template.Must(template.New("").Option("missingkey=error").Parse(`
 		(sum(
 			rate({{ .metricName }}{ {{ .additionalLabels }}{{ .serviceLabelName }}=~"{{ .serviceLabelValue }}"}[{{"{{ .window }}"}}])
 		) > 0)
-	) AND on({{ .serviceLabelName }}) sum(rate({{ .metricName }}{ {{ .serviceLabelName }}=~"{{ .serviceLabelValue }}"}[{{"{{ .window }}"}}])) > {{ .minimumRequestsPerSecond }}
+	) AND on() sum(rate({{ .metricName }}{ {{ .serviceLabelName }}=~"{{ .serviceLabelValue }}"}[{{"{{ .window }}"}}])) > {{ .minimumRequestsPerSecond }}
 ) OR on() vector(0)
 `))
 
