@@ -49,15 +49,17 @@ func TestSLIPlugin(t *testing.T) {
 
 		"When all options are provided, it should return a valid query.": {
 			options: map[string]string{
-				"metricName":               "up",
-				"ingressLabelName":         "ingress",
-				"ingressLabelValue":        "test",
-				"additionalLabels":         "instance=~\".*\"",
+				"metricName":        "up",
+				"ingressLabelName":  "ingress",
+				"ingressLabelValue": "test",
+				"additionalLabels":  "instance=~\".*\"",
 			},
 			expQuery: `
-sum(count_over_time((up{ instance=~".*", ingress=~"test" } == 0)[{{ .window }}:])) or vector(0)
-/
-sum(count_over_time((up{ instance=~".*", ingress=~"test" })[{{ .window }}:]))
+(
+	sum(count_over_time((up{instance=~".*", ingress=~"test"} == 0)[{{ .window }}:])) or vector(0)
+	/
+	sum(count_over_time((up{instance=~".*", ingress=~"test"})[{{ .window }}:]))
+) OR on() vector(0)
 `,
 		},
 	}

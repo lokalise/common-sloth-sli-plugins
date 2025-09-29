@@ -15,9 +15,11 @@ const (
 )
 
 var queryTpl = template.Must(template.New("").Option("missingkey=error").Parse(`
-sum(count_over_time(({{ .metricName }}{ {{ .additionalLabels }}{{ .ingressLabelName }}=~"{{ .ingressLabelValue }}" } == 0)[{{"{{ .window }}"}}:])) or vector(0)
-/
-sum(count_over_time(({{ .metricName }}{ {{ .additionalLabels }}{{ .ingressLabelName }}=~"{{ .ingressLabelValue }}" })[{{"{{ .window }}"}}:]))
+(
+	sum(count_over_time(({{ .metricName }}{{"{"}}{{ .additionalLabels }}{{ .ingressLabelName }}=~"{{ .ingressLabelValue }}"{{"}"}} == 0)[{{"{{ .window }}"}}:])) or vector(0)
+	/
+	sum(count_over_time(({{ .metricName }}{{"{"}}{{ .additionalLabels }}{{ .ingressLabelName }}=~"{{ .ingressLabelValue }}"{{"}"}})[{{"{{ .window }}"}}:]))
+) OR on() vector(0)
 `))
 
 // SLIPlugin will return a query that will return the availability error based on traefik V1 ingress metrics.
@@ -25,17 +27,16 @@ func SLIPlugin(ctx context.Context, meta, labels, options map[string]string) (st
 	metricName, err := getMetricName(options)
 	ingressLabelName, err := getIngressLabelName(options)
 	ingressLabelValue, err := getIngressLabelValue(options)
-
 	if err != nil {
 		return "", fmt.Errorf("Error parsing options: %w", err)
 	}
 
 	var b bytes.Buffer
 	data := map[string]string{
-		"metricName":               metricName,
-		"ingressLabelName":         ingressLabelName,
-		"ingressLabelValue":        ingressLabelValue,
-		"additionalLabels":         getAdditionalLabels(options),
+		"metricName":        metricName,
+		"ingressLabelName":  ingressLabelName,
+		"ingressLabelValue": ingressLabelValue,
+		"additionalLabels":  getAdditionalLabels(options),
 	}
 	err = queryTpl.Execute(&b, data)
 	if err != nil {
