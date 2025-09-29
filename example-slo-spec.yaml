@@ -58,3 +58,25 @@ spec:
             runbookurl: todo
         ticketAlert:
           disable: true
+
+    # Metric sample:
+    #   probe_success{ingress="expert-api-ingress-internal"}
+    - name: uptime
+      objective: 99.99
+      description: "99.99% of the requests should be below 500ms"
+      sli:
+        plugin:
+          id: lokalise/uptime
+          options:
+            metricName: probe_success
+            ingressLabelName: ingress
+            ingressLabelValue: app-public
+            additionalLabels: env="live"
+      alerting:
+        name: Uptime
+        pageAlert:
+          annotations:
+            name: "Service down '{{ $labels.sloth_service }}'"
+            runbookurl: todo
+        ticketAlert:
+          disable: true
