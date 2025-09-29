@@ -19,3 +19,4 @@ docker run -v $(pwd):/home/nonroot ghcr.io/slok/sloth:v0.11.0 generate -p ./plug
 ## Usage
 
 Sloth runs with a `git-sync` sidecar which will automatically pick up the latest changes from this repo.
+A webhook is fired by `git-sync` which causes Sloth to reload the plugins and regenerate the Prometheus rules.
