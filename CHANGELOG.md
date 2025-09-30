@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/lokalise/common-sloth-sli-plugins/compare/v1.1.0...v1.1.1) (2025-09-29)
+
+
+### Bug Fixes
+
+* Add missing fallback value for uptime plugin ([1bb9de9](https://github.com/lokalise/common-sloth-sli-plugins/commit/1bb9de9bb6b375e9af84021cd8b351d6fe888605))
+
 ## [1.1.0](https://github.com/lokalise/common-sloth-sli-plugins/compare/v1.0.0...v1.1.0) (2024-09-10)
 
 
