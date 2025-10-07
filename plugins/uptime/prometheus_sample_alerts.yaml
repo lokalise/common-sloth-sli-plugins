@@ -1,0 +1,5 @@
+groups:
+  - name: example
+    rules:
+      - alert: expert-api-uptime-internal-uptime-internal
+        expr: (max without (sloth_window) (slo:sli_error:ratio_rate5m{sloth_id="expert-api-service-uptime-internal-v1",sloth_service="expert-api-service",sloth_slo="uptime-internal-v1"} > (14.784 * 0.00010000000000005117)) and max without (sloth_window) (slo:sli_error:ratio_rate1h{sloth_id="expert-api-service-uptime-internal-v1",sloth_service="expert-api-service",sloth_slo="uptime-internal-v1"} > (14.784 * 0.00010000000000005117))) or (max without (sloth_window) (slo:sli_error:ratio_rate30m{sloth_id="expert-api-service-uptime-internal-v1",sloth_service="expert-api-service",sloth_slo="uptime-internal-v1"} > (6.16 * 0.00010000000000005117)) and max without (sloth_window) (slo:sli_error:ratio_rate6h{sloth_id="expert-api-service-uptime-internal-v1",sloth_service="expert-api-service",sloth_slo="uptime-internal-v1"} > (6.16 * 0.00010000000000005117)))
