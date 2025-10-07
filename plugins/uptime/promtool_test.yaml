@@ -1,0 +1,64 @@
+rule_files:
+  - prometheus_sample_alerts.yaml
+
+# this equals to the sampling rate of live Prometheus instances
+evaluation_interval: 15s
+
+tests:
+  # happy path: service operating normally and metric has baseline value
+  - input_series:
+      - series: &base_sample 'probe_success{alert_owner="platform", env="live", ingress="expert-api-ingress-internal", instance="http://expert-api-http.live.lokalise.cloud/", job="probe/expert/expert-api-probe-internal", namespace="expert"}'
+        values: "1x240" # '1 1 ... 1' - samples fill an 1h window (4[samples/min] * 60)
+
+    promql_expr_test:
+      # basic verification
+      # retrieve the metric at t=5m
+      - expr: probe_success == 1
+        eval_time: 5m # execute 'expr' at this time (from 0m)
+        exp_samples: # expected samples
+          - labels: *base_sample
+            value: 1
+      # recording rule: slo:sli_error:ratio_rate5m
+      # output: no errors, 0 vector is returned
+      - expr: &sli_5m |
+          sum(avg_over_time((probe_success{ingress=~"expert-api-ingress-internal",instance=~".*"} == bool 0)[5m:])) or vector(0)
+        eval_time: 5m
+        exp_samples:
+          - labels: "{}"
+            value: 0
+
+  # spike: service has a short spike (1 sample) in the metric at t=15m
+  - input_series:
+      - series: *base_sample
+        values: "1x59 0 1x180" # '1 1 ... 0[t=15m]... 1' - 1 sample spike, rest fills a 1h window (4[samples/min] * 60 = 240 samples)
+
+    promql_expr_test:
+      # basic verification
+      ## retrieve the metric at t=15m
+      - expr: probe_success == 0
+        eval_time: 15m # execute 'expr' at t
+        exp_samples:
+          - labels: *base_sample
+            value: 0
+      # recording rule: slo:sli_error:ratio_rate5m
+      ## output: no errors, 0 vector is returned
+      - expr: *sli_5m
+        ## 1 minute before spike
+        eval_time: 14m
+        exp_samples:
+          - labels: "{}" # this is how to expect a scalar/empty result with no labels
+            value: 0
+      ## output: no errors, 0 vector is returned
+      - expr: *sli_5m
+        ## at the time of the spike
+        eval_time: 15m
+        exp_samples:
+          - labels: "{}" # this is how to expect a scalar/empty result with no labels
+            value: 0.05
+
+    alert_rule_test:
+      - alertname: expert-api-uptime-internal-uptime-internal
+        # Leaving 'exp_alerts' empty == no alert should be firing
+        exp_alerts:
+          # - exp_labels:
+          #     sloth_id: expert-api-service-uptime-internal-v1
