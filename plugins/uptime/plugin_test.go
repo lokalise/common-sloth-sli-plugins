@@ -49,17 +49,17 @@ func TestSLIPlugin(t *testing.T) {
 
 		"When all options are provided, it should return a valid query.": {
 			options: map[string]string{
-				"metricName":        "up",
+				"metricName":        "probe_success",
 				"ingressLabelName":  "ingress",
 				"ingressLabelValue": "test",
 				"additionalLabels":  "instance=~\".*\"",
 			},
 			expQuery: `
-(
-	sum(count_over_time((up{instance=~".*", ingress=~"test"} == 0)[{{ .window }}:])) or vector(0)
-	/
-	sum(count_over_time((up{instance=~".*", ingress=~"test"})[{{ .window }}:]))
-) OR on() vector(0)
+max(avg_over_time(
+	(
+		avg_over_time(probe_success{instance=~".*", ingress=~"test"}[1m]) <= bool 0.25
+	)[{{ .window }}:1m]
+)) OR on() vector(0)
 `,
 		},
 	}

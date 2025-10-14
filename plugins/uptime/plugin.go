@@ -15,11 +15,11 @@ const (
 )
 
 var queryTpl = template.Must(template.New("").Option("missingkey=error").Parse(`
-(
-	sum(count_over_time(({{ .metricName }}{{"{"}}{{ .additionalLabels }}{{ .ingressLabelName }}=~"{{ .ingressLabelValue }}"{{"}"}} == 0)[{{"{{ .window }}"}}:])) or vector(0)
-	/
-	sum(count_over_time(({{ .metricName }}{{"{"}}{{ .additionalLabels }}{{ .ingressLabelName }}=~"{{ .ingressLabelValue }}"{{"}"}})[{{"{{ .window }}"}}:]))
-) OR on() vector(0)
+max(avg_over_time(
+	(
+		avg_over_time({{ .metricName }}{{"{"}}{{ .additionalLabels }}{{ .ingressLabelName }}=~"{{ .ingressLabelValue }}"{{"}"}}[1m]) <= bool 0.25
+	)[{{"{{ .window }}"}}:1m]
+)) OR on() vector(0)
 `))
 
 // SLIPlugin will return a query that will return the availability error based on traefik V1 ingress metrics.

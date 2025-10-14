@@ -1,0 +1,86 @@
+rule_files:
+  - prometheus_sample_alerts.yaml
+
+# this equals to the sampling rate of live Prometheus instances
+evaluation_interval: 15s
+
+tests:
+  # happy path: service operating normally and metric has baseline value
+  - input_series:
+      - series: &base_sample_1 'probe_success{alert_owner="platform", env="live", ingress="expert-api-ingress-internal", instance="http://expert-api-http.live.lokalise.cloud/", job="probe/expert/expert-api-probe-internal", namespace="expert"}'
+        values: "1x240" # '1 1 ... 1' - samples fill an 1h window (4[samples/min] * 60)
+      - series: &base_sample_2 'probe_success{alert_owner="platform", env="live", ingress="expert-api-ingress-internal", instance="http://mock.lokalise.cloud/", job="probe/expert/expert-api-probe-internal", namespace="expert"}'
+        values: "1x240" # '1 1 ... 1' - samples fill an 1h window (4[samples/min] * 60)
+
+    promql_expr_test:
+      # basic verification
+      # retrieve the metric at t=5m
+      - expr: &base_metric probe_success
+        eval_time: 5m # execute 'expr' at this time (from 0m)
+        exp_samples: # expected samples
+          - labels: *base_sample_1
+            value: 1
+          - labels: *base_sample_2
+            value: 1
+      # recording rule: slo:sli_error:ratio_rate5m
+      # output: no errors, 0 vector is returned
+      - expr: &sli_5m |
+          max(avg_over_time(
+            (
+              avg_over_time(probe_success[1m]) <= bool 0.25
+            )[5m:1m]
+          )) or on() vector(0)
+        eval_time: 5m
+        exp_samples:
+          - labels: &result_vector_empty "{}"
+            value: 0
+
+  - input_series:
+      - series: *base_sample_1
+        # simulate a 1m (4 sample) downtime: '[0m-4m45s: 1] [5m-5m45s: 0] [6m-6m45s: 1]'
+        values: "1x19 0 0 0 0 1 1 1 1"
+      - series: *base_sample_2
+        # simulate a 1m (4 sample) downtime: '[0m-4m45s: 1] [5m-5m45s: 0] [6m-6m45s: 1]'
+        values: "1x19 0 0 0 0 1 1 1 1"
+
+    promql_expr_test:
+      # basic verification
+      ## retrieve the metric at t=1m
+      - expr: *base_metric
+        eval_time: 1m # execute 'expr' at t
+        exp_samples:
+          - labels: *base_sample_1
+            value: 1
+          - labels: *base_sample_2
+            value: 1
+      # recording rule: slo:sli_error:ratio_rate5m
+      ## output: no errors, 0 vector is returned
+      - expr: *sli_5m
+        ## 1 minute before spike
+        eval_time: 4m
+        exp_samples:
+          - labels: *result_vector_empty
+            value: 0
+
+      # 1 bad sample in range, error rate is present
+      - expr: *sli_5m
+        eval_time: 5m
+        exp_samples:
+          - labels: *result_vector_empty
+            value: 0
+
+      # 4 bad samples in range, error rate is present
+      - expr: *sli_5m
+        eval_time: 6m
+        exp_samples:
+          - labels: *result_vector_empty
+            value: 0.2
+
+    # TODO: set up alerting tests
+    alert_rule_test:
+      - alertname: expert-api-uptime-internal-uptime-internal
+        # Leaving 'exp_alerts' empty == no alert should be firing
+        exp_alerts:
+          # - exp_labels:
+          #     sloth_id: expert-api-service-uptime-internal-v1
+    ## next: non-consecutive errors
