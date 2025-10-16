@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.1.1](https://github.com/lokalise/common-sloth-sli-plugins/compare/v1.1.0...v1.1.1) (2025-10-14)
+
+
+### Bug Fixes
+
+* Add missing fallback value for uptime plugin ([1bb9de9](https://github.com/lokalise/common-sloth-sli-plugins/commit/1bb9de9bb6b375e9af84021cd8b351d6fe888605))
+* **PLAT-4887:** Update uptime query and add promtool tests ([287372d](https://github.com/lokalise/common-sloth-sli-plugins/commit/287372debcc79eb6d9d3bcb7786576cc87ad0623))
+
 ## [1.1.0](https://github.com/lokalise/common-sloth-sli-plugins/compare/v1.0.0...v1.1.0) (2024-09-10)
 
 
