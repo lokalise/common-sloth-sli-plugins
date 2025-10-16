@@ -1,0 +1,85 @@
+rule_files:
+  - prometheus_sample_alerts.yaml
+
+# this equals to the sampling rate of live Prometheus instances
+evaluation_interval: 15s
+
+tests:
+  # happy path: service operating normally with equal requested and processed counters
+  - input_series:
+      - series: &requested_sample 'request_counter_total{service="my-service", status="requested", route="/api/v1/users"}'
+        values: "0+1x240" # Counter: 0, 1, 2, 3, ... 240 (increments by 1 every 15s)
+      - series: &processed_sample 'request_counter_total{service="my-service", status="processed", route="/api/v1/users"}'
+        values: "0+1x240" # Counter: 0, 1, 2, 3, ... 240 (increments by 1 every 15s)
+
+    promql_expr_test:
+      # test the deviation calculation - should be 0 when equal
+      - expr: &deviation_metric |
+          (
+            (
+              sum(rate(request_counter_total{service="my-service", status="requested"}[1m]))
+              -
+              sum(rate(request_counter_total{service="my-service", status="processed"}[1m]))
+            )
+            /
+            (sum(rate(request_counter_total{service="my-service", status="requested"}[1m])) > 0)
+          ) or on() vector(0)
+        eval_time: 5m
+        exp_samples:
+          - labels: "{}"
+            value: 0 # No deviation when requested == processed
+
+  # test case: processing lag - some requests are not processed yet
+  - input_series:
+      - series: *requested_sample
+        values: "0+5x240" # All requests are made (5 per 15s)
+      - series: *processed_sample
+        # Simulate processing lag: only 80% of requests are processed
+        values: "0+4x240" # Counter: 0, 4, 8, 12, ... 960 (increments by 4 every 15s)
+
+    promql_expr_test:
+      # test the deviation calculation - should show 20% deviation
+      - expr: *deviation_metric
+        eval_time: 5m
+        exp_samples:
+          - labels: "{}"
+            value: 2.0000000000000012E-01 # 20% deviation with floating point precision
+
+  # test case: severe processing issues - only 50% processed
+  - input_series:
+      - series: *requested_sample
+        values: "0+2x240" # All requests are made (2 per 15s)
+      - series: *processed_sample
+        # Simulate severe processing issues: only 50% of requests are processed
+        values: "0+1x240" # Counter: 0, 1, 2, 3, ... 240 (increments by 1 every 15s)
+
+    promql_expr_test:
+      # test the deviation calculation - should show 50% deviation
+      - expr: *deviation_metric
+        eval_time: 5m
+        exp_samples:
+          - labels: "{}"
+            value: 0.5 # 50% deviation (2 - 1) / 2 = 0.5
+
+  # test case: no requests at all
+  - input_series:
+      - series: *requested_sample
+        values: "0+0x240" # No requests - counter stays at 0
+      - series: *processed_sample
+        values: "0+0x240" # No processing - counter stays at 0
+
+    promql_expr_test:
+      # test the deviation calculation - should return 0 vector
+      - expr: *deviation_metric
+        eval_time: 5m
+        exp_samples:
+          - labels: "{}"
+            value: 0 # No deviation when no requests
+
+    # TODO: set up alerting tests
+    alert_rule_test:
+      - alertname: my-service-request-processing-deviation
+        # Leaving 'exp_alerts' empty == no alert should be firing
+        exp_alerts:
+          # - exp_labels:
+          #     sloth_id: my-service-request-processing-deviation-v1

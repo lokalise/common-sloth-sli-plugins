@@ -1,0 +1,23 @@
+groups:
+  - name: request-processing-deviation-example
+    rules:
+      - alert: my-service-request-processing-deviation
+        expr: |
+          (
+            (
+              sum(rate(request_counter_total{service="my-service", status="requested"}[5m]))
+              -
+              sum(rate(request_counter_total{service="my-service", status="processed"}[5m]))
+            )
+            /
+            (sum(rate(request_counter_total{service="my-service", status="requested"}[5m])) > 0)
+          ) > 0.1
+        for: 2m
+        labels:
+          severity: warning
+          service: my-service
+          alert_type: request_processing_deviation
+        annotations:
+          summary: "High deviation between requested and processed requests"
+          description: "Service {{ $labels.service }} has {{ $value | humanizePercentage }} deviation between requested and processed requests over the last 5 minutes"
+          runbook_url: "https://docs.example.com/runbooks/request-processing-deviation"
